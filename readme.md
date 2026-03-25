@@ -16,3 +16,4 @@ Each lesson folder includes:
 - **01 — Concurrency and Parallelism**
 - **02 — Asyncio**
 - **03 — Pydantic**
+- **04 — How LLM Works**
