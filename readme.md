@@ -14,3 +14,4 @@ Each lesson folder includes:
 ### 🧠 Course Lessons
 
 - **01 — Concurrency and Parallelism**
+- **02 — Asyncio**
