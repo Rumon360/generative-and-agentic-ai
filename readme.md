@@ -17,3 +17,4 @@ Each lesson folder includes:
 - **02 — Asyncio**
 - **03 — Pydantic**
 - **04 — How LLM Works**
+- **05 — Configaration**
