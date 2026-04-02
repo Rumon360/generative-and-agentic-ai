@@ -19,3 +19,4 @@ Each lesson folder includes:
 - **04 — How LLM Works**
 - **05 — Configaration**
 - **06 — Prompt Fundamentals Encoding Instructions for LLMs**
+- **07 — Prompt Styles**
