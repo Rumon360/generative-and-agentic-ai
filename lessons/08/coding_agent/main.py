@@ -11,7 +11,7 @@ load_dotenv()
 
 client = OpenAI(
     api_key="lm-studio",
-    base_url="http://localhost:8080/v1",
+    base_url="http://localhost:1234/v1",
 )
 
 cwd = os.getcwd()
@@ -107,13 +107,17 @@ user_query = input("> ")
 messages.append({"role": "user", "content": f"START: {user_query}"})
 
 for _ in range(MAX_ITERATIONS):
+    content = ""
     for attempt in range(3):
         try:
             response = client.chat.completions.create(
                 model="google/gemma-4-e4b",
                 messages=messages,
             )
-            break
+            content = (response.choices[0].message.content or "").strip()
+            if content:
+                break
+            print(f"\n⚠️ Empty response, retrying ({attempt + 1}/3)...")
         except Exception as e:
             if "429" in str(e) and attempt < 2:
                 wait = 10 * (attempt + 1)
@@ -123,9 +127,6 @@ for _ in range(MAX_ITERATIONS):
                 print(f"\n❌ API error: {e}")
                 exit(1)
 
-    content = response.choices[0].message.content
-
-    content = (content or "").strip()
     if not content:
         print("\n❌ Model returned no content")
         break
