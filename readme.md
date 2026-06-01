@@ -20,3 +20,5 @@ Each lesson folder includes:
 - **05 — Configaration**
 - **06 — Prompt Fundamentals Encoding Instructions for LLMs**
 - **07 — Prompt Styles**
+- **08 — AI Agents**
+- **07 — RAG**
