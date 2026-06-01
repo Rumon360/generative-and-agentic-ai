@@ -11,7 +11,7 @@ load_dotenv()
 
 client = OpenAI(
     api_key="lm-studio",
-    base_url="http://localhost:1234/v1",
+    base_url="http://localhost:8080/v1",
 )
 
 cwd = os.getcwd()
