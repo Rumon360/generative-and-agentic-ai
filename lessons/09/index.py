@@ -30,7 +30,7 @@ vector_store = QdrantVectorStore.from_documents(
     documents=chunks,
     embedding=embedding_model,
     url=qdrant_url,
-    collection_name="go-lang-docs",
+    collection_name=pdf_name,
 )
 
 print("Indexing complete!")
