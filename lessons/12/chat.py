@@ -4,9 +4,9 @@ from langgraph.graph.message import add_messages
 from langgraph.graph import StateGraph, START, END
 from langchain_ollama import ChatOllama
 
-LLM_BASE_URL = "http://localhost:11434"
+LLM_BASE_URL = "http://localhost:11434/v1"
 LLM_API_KEY = "ollama"
-LLM_MODEL = "gemma4:e2b"
+LLM_MODEL = "mistral:7b"
 
 llm = ChatOllama(model=LLM_MODEL, base_url=LLM_BASE_URL)
 
