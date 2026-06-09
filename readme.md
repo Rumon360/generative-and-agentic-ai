@@ -25,3 +25,4 @@ Each lesson folder includes:
 - **10 — Scaleable RAG**
 - **11 — Image**
 - **12 — LangGraph**
+- **13 — Memory**
