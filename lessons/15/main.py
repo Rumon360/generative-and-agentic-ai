@@ -2,11 +2,16 @@ import speech_recognition as sr
 import multiprocessing
 import pyttsx3
 from utils import wave
+from utils.tools import TOOLS, TOOL_FUNCTIONS
 from openai import OpenAI
+import json
 
 LLM_API_KEY = "ollama"
 LLM_BASE_URL = "http://localhost:11434/v1"
 LLM_MODEL = "mistral:7b"
+EXTRACT_CITY_PROMPT = """Extract the city name from this text. Reply with ONLY the city name, nothing else. If no city is found, reply with "unknown".
+
+Text: {text}"""
 
 
 client = OpenAI(
@@ -25,6 +30,8 @@ SYSTEM_PROMPT = """
     - Avoid abbreviations, URLs, or anything that sounds unnatural when spoken.
     - Use natural spoken language — write how you'd actually talk.
     - If the transcript seems garbled or unclear, politely ask the user to repeat.
+    - You have tools available. USE them by making tool calls, do NOT describe or simulate calling them in text.
+    - When the user asks about weather, call the get_weather tool. When they ask for a Kanye quote, call the get_kanye_quote tool.
 """
 
 
@@ -32,6 +39,24 @@ def speak(text):
     engine = pyttsx3.init()
     engine.say(text)
     engine.runAndWait()
+
+
+def extract_city(text):
+    response = client.chat.completions.create(
+        model=LLM_MODEL,
+        messages=[{"role": "user", "content": EXTRACT_CITY_PROMPT.format(text=text)}],
+    )
+    return response.choices[0].message.content.strip()
+
+
+def detect_tool_from_text(text):
+    lower = text.lower()
+    if "weather" in lower:
+        city = extract_city(text)
+        if city and city.lower() != "unknown":
+            result = TOOL_FUNCTIONS["get_weather"](city)
+            return f"Here is the weather data for {city}: {result}. Summarize this naturally for the user."
+    return None
 
 
 def main():
@@ -70,9 +95,40 @@ def main():
             response = client.chat.completions.create(
                 model=LLM_MODEL,
                 messages=messages,
+                tools=TOOLS,
             )
 
-            ai_response = response.choices[0].message.content
+            message = response.choices[0].message
+
+            if message.tool_calls:
+                messages.append(message)
+                for tool_call in message.tool_calls:
+                    fn = TOOL_FUNCTIONS[tool_call.function.name]
+                    args = json.loads(tool_call.function.arguments)
+                    result = fn(**args)
+                    messages.append({
+                        "role": "tool",
+                        "tool_call_id": tool_call.id,
+                        "content": result,
+                    })
+
+                response = client.chat.completions.create(
+                    model=LLM_MODEL,
+                    messages=messages,
+                )
+                ai_response = response.choices[0].message.content
+            else:
+                tool_result = detect_tool_from_text(stt)
+                if tool_result:
+                    messages.append({"role": "user", "content": tool_result})
+                    response = client.chat.completions.create(
+                        model=LLM_MODEL,
+                        messages=messages,
+                    )
+                    ai_response = response.choices[0].message.content
+                else:
+                    ai_response = message.content
+
             print("AI:", ai_response, "\n")
 
             messages.append({"role": "assistant", "content": ai_response})
