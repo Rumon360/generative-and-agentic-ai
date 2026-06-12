@@ -9,9 +9,10 @@ import json
 LLM_API_KEY = "ollama"
 LLM_BASE_URL = "http://localhost:11434/v1"
 LLM_MODEL = "mistral:7b"
-EXTRACT_CITY_PROMPT = """Extract the city name from this text. Reply with ONLY the city name, nothing else. If no city is found, reply with "unknown".
-
-Text: {text}"""
+EXTRACT_CITY_PROMPT = """
+    Extract the city name from this text. Reply with ONLY the city name, nothing else. If no city is found, reply with "unknown".
+    Text: {text}
+"""
 
 
 client = OpenAI(
