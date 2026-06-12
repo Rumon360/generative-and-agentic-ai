@@ -26,4 +26,5 @@ Each lesson folder includes:
 - **11 — Image**
 - **12 — LangGraph**
 - **13 — Memory**
-- **13 — Graph Memory**
+- **14 — Graph Memory**
+- **15 — Voice Agents**
